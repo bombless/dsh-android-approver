@@ -209,7 +209,7 @@ export function apply(ctx: Context, config?: Partial<Config>) {
         )
       }
     })
-  })
+  }, { prepend: true })
 
   server.listen(cfg.port, cfg.host, () => {
     ctx.logger.info('dsh-android-approver listening on ' + cfg.host + ':' + cfg.port)
