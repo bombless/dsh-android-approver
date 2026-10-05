@@ -1,0 +1,7 @@
+- id: dsh-android-approver
+  name: dsh-android-approver
+  config:
+    host: "0.0.0.0"
+    port: 38741
+    token: ""
+    approvalTimeoutMs: 120000
