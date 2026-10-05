@@ -129,7 +129,7 @@ export function apply(ctx: Context, config?: Partial<Config>) {
 
   server.on('upgrade', (req, socket, head) => {
     const url = new URL(req.url ?? '/', 'http://dsh.android')
-    if (url.pathname !== '/ws' || !safeEqual(url.searchParams.get('token') ?? '', cfg.token)) {
+    if (url.pathname !== '/ws' || !authorized(req, cfg.token)) {
       socket.destroy()
       return
     }
