@@ -7,7 +7,6 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.json.JSONObject
-import java.net.URLEncoder
 
 data class TaskItem(val id:String,val sessionId:String,val cwd:String?,val pendingApprovals:Int)
 data class ApprovalItem(val id:String,val taskId:String,val sessionId:String,val toolName:String,val reason:String?)
@@ -26,9 +25,9 @@ object ApproverConnection {
         disconnect()
         val s=_state.value
         if(s.endpoint.isBlank()||s.token.isBlank()){_state.value=s.copy(error="Endpoint and token are required");return}
-        val sep=if(s.endpoint.contains("?")) "&" else "?"
-        val url=s.endpoint+sep+"token="+URLEncoder.encode(s.token,"UTF-8")
-        socket=client.newWebSocket(Request.Builder().url(url).build(),object:WebSocketListener(){
+        socket=client.newWebSocket(
+            Request.Builder().url(s.endpoint).header("Authorization","Bearer "+s.token).build(),
+            object:WebSocketListener(){
             override fun onOpen(webSocket:WebSocket,response:Response){_state.value=_state.value.copy(connected=true,error=null)}
             override fun onMessage(webSocket:WebSocket,text:String)=parse(text)
             override fun onFailure(webSocket:WebSocket,t:Throwable,response:Response?){_state.value=_state.value.copy(connected=false,error=t.message?:"connection failed")}
